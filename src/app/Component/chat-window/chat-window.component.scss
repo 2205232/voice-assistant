@@ -5,13 +5,15 @@
   }
   
   .header-bar {
-    background-color: #c1cef0;
+    background-color: #e2e6f0;
     height: 50px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
     padding: 0 15px;
-    
+    //
+    margin-left: 245px;
+    z-index: 1;
   }
   
   .settings-icon i {
@@ -27,12 +29,12 @@
   
   .sidebar {
     width: 200px;
-    background-color: #c1cef0;
+    background-color: #e4e8f3;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-top: 5px;
+    margin-top: -49px;
     margin-bottom: 5px;
   }
   
@@ -55,20 +57,20 @@
   
   .nav-links {
     width: 100%;
-    margin-top: 225px;
+    margin-top: 295px;
   }
   
-  .nav-links a {
-    display: block;
-    color: #333;
-    text-decoration: none;
-    margin-bottom: 10px;
-    text-align: left;
-    padding: 10px;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  }
+  // .nav-links a {
+  //   display: block;
+  //   color: #333;
+  //   text-decoration: none;
+  //   margin-bottom: 10px;
+  //   text-align: left;
+  //   padding: 10px;
+  //   background-color: #fff;
+  //   border-radius: 5px;
+  //   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  // }
   
 //   .login-button {
 //     border: none;
@@ -82,6 +84,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: 80px;
   }
   
   .search-bar {
@@ -89,10 +92,11 @@
     align-items: center;
     width: 100%;
     max-width: 700px;
-    background-color: #b9b3b3;
+    //background-color: #b9b3b3;
     padding: 10px;
     border-radius: 25px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border: 1px solid black;
   }
   
   .search-bar input {
@@ -124,19 +128,16 @@
   .adjust-icon {
     margin-bottom: -5px;
     margin-top:2px;
-    padding: 2px;
+    padding: 3px;
   }
   .label-space {
     padding-left: 5px
   }
 
   .messages-container {
-    width: 300px;
-    padding: 10px;
-    background-color: #f0f0f0;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow-y: auto;
+    width: 900px;
+    padding-left: 80px;
   }
   
   .message {
@@ -144,6 +145,8 @@
     border-radius: 10px;
     margin: 5px 0;
     max-width: 60%;
+    
+
   }
   
   .from-user {
@@ -151,10 +154,14 @@
     margin-left: auto;
     text-align: left;
     overflow: overlay;
-    //text-overflow: ellipsis;
-    margin-bottom: 80px;
-    //white-space: nowrap;
+    //margin-bottom: 80px;
+  }
 
+  .res-msg{  
+    bottom: 80px;
+    position: fixed;
+    padding-left: 180px;
+    
   }
 
   .input-box {
@@ -162,6 +169,7 @@
     position: fixed;
     width: -webkit-fill-available;
     margin-right: 20px;
+
 
   }
 

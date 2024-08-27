@@ -1,7 +1,7 @@
 <div class="dashboard-container">
     <header class="header-bar">
         <div style="margin-right: 10px;">
-            <mat-icon >menu</mat-icon>
+          <mat-icon>notifications_none</mat-icon>
         </div>         
       <div class="settings-icon">
         <i class="fas fa-cog"></i>
@@ -13,15 +13,27 @@
         <div class="logo">
             <img src="/assets/logo.png">
         </div>
-        <button mat-flat-button   (click)="newChat()">+ New Chat</button>
+        <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
+
+        <div  >
+          <div *ngFor="let chat of chats" class="chat-tab" (click)="setActiveChat(chat.id)">
+
+            new {{ chat.title }}
+      </div>
+          <!-- <div *ngFor="let chat of chatsBackup">
+            <mat-icon > chat</mat-icon>
+            <span class="label-space"> Chat Window </span>
+          </div> -->
+        </div>        
         
-        <nav class="nav-links">
+        <nav class="nav-links" >
           <div *ngIf="isLoggedIn">
             <mat-icon class="adjust-icon"  (click)="manageDoc()">cloud_upload</mat-icon>
-            <span class="label-space">Manage Doccument</span><br></div>
+            <span class="label-space">Upload Doccument</span><br></div>
             <mat-icon class="adjust-icon">history</mat-icon><span class="label-space">history</span><br>
             <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br>
-            <button  mat-stroked-button color="accent" *ngIf="!isLoggedIn" (click)="userlogin()"><mat-icon>exit_to_app</mat-icon> Login</button>
+            <button  mat-stroked-button color="accent"  *ngIf="!isLoggedIn" (click)="userlogin()">
+              <mat-icon class="adjust-icon">exit_to_app</mat-icon> Login</button>
             <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
                 <mat-icon>exit_to_app</mat-icon> Login
             </button>
@@ -29,8 +41,8 @@
       </aside>
   
       <section class="assistant-section ">
-        <h1  *ngIf="showgoogle">  <img src="/assets/logo.png"></h1>
-          <div [ngClass]="{'input-box':!showgoogle}" >
+        <h1  *ngIf="showgoogle">  <img src="/assets/gassistant.jpg"></h1>
+          <div class="messages-container"  [ngClass]="{'res-msg':!showgoogle}">
             <div *ngFor="let message of messages" class="message" [ngClass]="{'from-user':message.sender === 'user'}">
               <mat-icon *ngIf="headicon" >account_circle</mat-icon>
               {{message.text}}

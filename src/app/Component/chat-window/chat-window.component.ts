@@ -1,4 +1,4 @@
-import { Component ,OnInit} from '@angular/core';
+import { Component ,Input,OnInit} from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { RouterOutlet } from '@angular/router';
 import {MatSidenavModule} from '@angular/material/sidenav';
@@ -8,6 +8,7 @@ import {MatButtonModule} from '@angular/material/button';
 import { CommonModule } from '@angular/common';
 import { Router,RouterModule} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+import { ChatSevicesService } from '../../services/chat-sevices.service';
 
 interface Message {
   text: string;
@@ -23,13 +24,22 @@ interface Message {
   styleUrl: './chat-window.component.scss'
 })
 export class ChatWindowComponent {  
-
-  constructor(private router: Router,private http: HttpClient){ }
+  @Input() chat: any;
+  constructor(private router: Router,private http: HttpClient, private chatService: ChatSevicesService){ }
   isLoggedIn :boolean=false; 
+  newchaticon :boolean=false;
   searchText: any = '';
   messages: Message[] = [];
   showgoogle:boolean=true;
   headicon:boolean=false;
+  currentChat: any = {}; // Initialize your chat model
+  chatsBackup: any[] = [];
+
+  ///test
+  chats: { id: number, title: any }[] = [];
+  activeChatId: number | null = null;
+  chatCounter: number = 0;
+  /////
 
   ngOnInit(){
     this.isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
@@ -45,8 +55,47 @@ export class ChatWindowComponent {
     this.router.navigate(['/']);
   }
 
-  newChat(){
-    window.open('/');    
+  // Function to start a new chat
+
+  startNewChat() {
+
+    this.chatCounter++;
+    if( this.chatCounter<=5){
+      const newChat = { id: this.chatCounter, title:this.chatCounter };
+
+    this.chats.push(newChat);
+
+    this.setActiveChat(newChat.id);
+      
+    }else{
+      return;
+    }
+    
+
+  }
+
+  setActiveChat(chatId: number) {
+
+    this.activeChatId = chatId;
+
+  }
+
+  createNewChat(){
+
+   this.startNewChat();
+    //biswaaaaaaa
+      // Create a backup of the current chat
+    //   this.chatService.addChat(this.currentChat);  
+    //   // Reset the current chat for a new session
+    //   this.currentChat = {};  
+    //   // Get updated chat backups
+    //   this.chatsBackup = this.chatService.getChatsBackup();
+
+    // console.log(this.chatsBackup);
+    this.newchaticon=true;
+    this.searchText='';
+    this.messages=[];
+    this.router.navigate(['/dashboard']);   
   }
 
   manageDoc(){
