@@ -1,0 +1,8 @@
+{
+  "routes": [
+    "/AudioToFaq",
+    "/dashboard",
+    "/Login",
+    "/managedoc"
+  ]
+}
