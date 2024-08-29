@@ -21,15 +21,16 @@ export class ManageDocComponent {
   }
   onUpload() {
     if (this.selectedFile) {
+      //console.error(this.selectedFile);
       const formData = new FormData();
       formData.append("file", this.selectedFile, this.selectedFile.name);
 
-      this.http.post('https://your-backend-url/upload', formData)
+      // this.http.post('https://your-backend-url/upload', formData)
       
-      .subscribe({
-        next:  (response: any)=> console.log('Upload Success',response),
-        error:(err) => console.error('Upload failed',err),
-      });
+      // .subscribe({
+      //   next:  (response: any)=> console.log('Upload Success',response),
+      //   error:(err) => console.error('Upload failed',err),
+      // });
     } else
     console.error('No file selected');
   }

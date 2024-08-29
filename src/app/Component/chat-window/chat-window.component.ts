@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Router,RouterModule} from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChatSevicesService } from '../../services/chat-sevices.service';
+import { response } from 'express';
 
 interface Message {
   text: string;
@@ -36,7 +37,7 @@ export class ChatWindowComponent {
   chatsBackup: any[] = [];
 
   ///test
-  chats: { id: number, title: any }[] = [];
+  chats: { chatId: number, title: any }[] = [];
   activeChatId: number | null = null;
   chatCounter: number = 0;
   /////
@@ -57,49 +58,52 @@ export class ChatWindowComponent {
 
   // Function to start a new chat
 
-  startNewChat() {
+  // startNewChat() {   
+  //   this.chatCounter++;
+  //   if( this.chatCounter<=5){
+  //     const newChat = { chatId: this.chatCounter, title:this.messages};
+  //   this.chats.push(newChat);
+  //   console.log(this.chats);
+  //   this.setActiveChat(newChat.chatId);      
+  //   }else{
+  //     return;
+  //   }  
 
-    this.chatCounter++;
-    if( this.chatCounter<=5){
-      const newChat = { id: this.chatCounter, title:this.chatCounter };
-
-    this.chats.push(newChat);
-
-    this.setActiveChat(newChat.id);
-      
-    }else{
-      return;
-    }
-    
-
-  }
-
-  setActiveChat(chatId: number) {
-
-    this.activeChatId = chatId;
-
-  }
+  // }
 
   createNewChat(){
-
-   this.startNewChat();
+    // this.startNewChat();
+    //  this.messages=[];
     //biswaaaaaaa
       // Create a backup of the current chat
-    //   this.chatService.addChat(this.currentChat);  
-    //   // Reset the current chat for a new session
-    //   this.currentChat = {};  
+       this.chatService.addChat(this.messages);  
+    // Reset the current chat for a new session
+       this.messages=[];
     //   // Get updated chat backups
-    //   this.chatsBackup = this.chatService.getChatsBackup();
+     this.chatsBackup = this.chatService.getChatsBackup();
+    console.log(this.chatsBackup);   
+   // this.router.navigate(['/dashboard']);   
+  }
 
-    // console.log(this.chatsBackup);
-    this.newchaticon=true;
-    this.searchText='';
-    this.messages=[];
-    this.router.navigate(['/dashboard']);   
+  setActiveChat(chatId: number) {    
+    this.activeChatId = chatId;
+    let inex=this.activeChatId-1;
+    let UId =this.chatsBackup[inex].chatId;
+    if(this.activeChatId=UId){
+      this.messages=this.chatsBackup[inex].chat
+      console.log(this.messages); 
+    }
+    
+    console.log(inex);
+
   }
 
   manageDoc(){
     this.router.navigate(['/managedoc']); 
+  }
+
+  AudiotoFAQ(){
+    this.router.navigate(['/AudioToFaq']);  
   }
   //input box  works from here
   startListening(){
@@ -124,21 +128,35 @@ export class ChatWindowComponent {
   }
 
   sendMessage() {
-    this.showgoogle=false;
-    let url='https://reqres.in/api/users';
-    if(this.searchText!==''){
-      this.headicon=true;
-      this.http.post<any>(url, { text: this.searchText, sender: 'user' }).
-      subscribe(response => {      
-        this.messages.push(response);
-        console.log(this.messages);
-      });
-    }else{
-       //this.headicon=false;
-      this.messages.push({ text: 'All Well ?', sender: 'bot'});
+    if(this.searchText){
+       this.showgoogle=false;
+       this.headicon=true;
+      let payload ={
+        prompt: "Find answer to the following query.Reject questions which are irrelevant.",
+        text: this.searchText,
+        language: "hi-IN",
+        datastore: "ondc-bot-ds_1707487778718"
+      }
+      this.chatService.getgenerateTest(payload).subscribe((response:any)=>{
+      this.messages.push(response);
+          console.log(response);      
+        })
     }
    
-    this.searchText = '';
+    // this.showgoogle=false;
+    // this.headicon=true;
+    // if(this.searchText){
+    // let url='https://reqres.in/api/users';
+    //         this.http.post<any>(url, { text: this.searchText, sender: 'user' }).
+    //   subscribe(response => {      
+    //     this.messages.push(response);
+    //     console.log(this.messages);
+    //   });
+    // }else{
+    //   this.messages.push({ text: 'All Well ?', sender: 'bot'});
+    // }  
+   
+    // this.searchText = '';
     
   }
 

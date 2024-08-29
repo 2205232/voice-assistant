@@ -1,62 +1,67 @@
 <div class="dashboard-container">
-    <header class="header-bar">
-        <div style="margin-right: 10px;">
-          <mat-icon>notifications_none</mat-icon>
-        </div>         
-      <div class="settings-icon">
-        <i class="fas fa-cog"></i>
-      </div>
-    </header>
-  
-    <div class="main-content">
-      <aside class="sidebar">
-        <div class="logo">
-            <img src="/assets/logo.png">
-        </div>
-        <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
-
-        <div  >
-          <div *ngFor="let chat of chats" class="chat-tab" (click)="setActiveChat(chat.id)">
-
-            new {{ chat.title }}
-      </div>
-          <!-- <div *ngFor="let chat of chatsBackup">
-            <mat-icon > chat</mat-icon>
-            <span class="label-space"> Chat Window </span>
-          </div> -->
-        </div>        
-        
-        <nav class="nav-links" >
-          <div *ngIf="isLoggedIn">
-            <mat-icon class="adjust-icon"  (click)="manageDoc()">cloud_upload</mat-icon>
-            <span class="label-space">Upload Doccument</span><br></div>
-            <mat-icon class="adjust-icon">history</mat-icon><span class="label-space">history</span><br>
-            <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br>
-            <button  mat-stroked-button color="accent"  *ngIf="!isLoggedIn" (click)="userlogin()">
-              <mat-icon class="adjust-icon">exit_to_app</mat-icon> Login</button>
-            <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
-                <mat-icon>exit_to_app</mat-icon> Login
-            </button>
-        </nav>
-      </aside>
-  
-      <section class="assistant-section ">
-        <h1  *ngIf="showgoogle">  <img src="/assets/gassistant.jpg"></h1>
-          <div class="messages-container"  [ngClass]="{'res-msg':!showgoogle}">
-            <div *ngFor="let message of messages" class="message" [ngClass]="{'from-user':message.sender === 'user'}">
-              <mat-icon *ngIf="headicon" >account_circle</mat-icon>
-              {{message.text}}
-            </div>
-          </div>  
-          <div class="search-bar"[ngClass]="{'input-box':!showgoogle}" >
-            <input type="text" placeholder="Ask me anything..." (keyup.enter)="sendMessage()"
-            [(ngModel)]="searchText"/>
-            <mat-icon class="send-btn" (click)="startListening()">mic</mat-icon>          
-            <!-- <mat-icon class="send-btn"> attach_file</mat-icon> -->
-            <mat-icon class="send-btn"  (click)="sendMessage()">send</mat-icon>
-            <!-- <button class="send-btn"><i class="fas fa-paper-plane"></i></button> -->
-          </div>
-        <!-- </div> -->
-      </section>
+  <header class="header-bar">
+      <div style="margin-right: 10px;">
+        <mat-icon>notifications_none</mat-icon>
+      </div>         
+    <div class="settings-icon">
+      <i class="fas fa-cog"></i>
     </div>
+  </header>
+
+  <div class="main-content">
+    <aside class="sidebar">
+      <div class="logo">
+          <img src="/assets/logo.png">
+      </div>
+      <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
+
+      <div style="padding-top: 5px; font-size: small;">
+        <div *ngFor="let chat of chatsBackup" class="chat-tab fa-solid fa-file"(click)="setActiveChat(chat.chatId)">
+          new chat-{{ chat.chatId }}
+        </div>
+        <!-- <div *ngFor="let chat of chatsBackup">
+          <mat-icon > chat</mat-icon>
+          <span class="label-space"> Chat Window </span>
+        </div> -->
+      </div>        
+      
+      <nav class="nav-links" >
+        <div *ngIf="isLoggedIn" (click)="manageDoc()">
+          <mat-icon class="adjust-icon"  >cloud_upload</mat-icon>
+          <span class="label-space">Upload Document</span><br></div>
+          <mat-icon class="adjust-icon">history</mat-icon><span class="label-space">History</span><br>
+          <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br>
+          <button  mat-stroked-button color="accent"  *ngIf="!isLoggedIn" (click)="userlogin()">
+            <mat-icon class="adjust-icon">exit_to_app</mat-icon> Login</button>
+          <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
+              <mat-icon>exit_to_app</mat-icon> Login
+          </button>
+      </nav>
+    </aside>
+
+    <section class="assistant-section ">
+      <h1  *ngIf="showgoogle">  <img src="/assets/gassistant.jpg"></h1>
+      <!-- <div class="messages-container" *ngIf="activeChatId" [ngClass]="{'res-msg':!showgoogle}">
+        <div *ngFor="let chat of chatsBackup[chat]" class="message" [ngClass]="{'from-user':chat.sender === 'user'}">
+          <mat-icon *ngIf="headicon" >account_circle</mat-icon>
+          {{chat.text}}
+        </div>
+      </div> -->
+        <div class="messages-container"  [ngClass]="{'res-msg':!showgoogle}">
+          <div *ngFor="let message of messages" class="message" [ngClass]="{'from-user':message.sender === 'user'}">
+            <mat-icon *ngIf="headicon" >account_circle</mat-icon>
+            {{message.text}}
+          </div>
+        </div>  
+        <div class="search-bar"[ngClass]="{'input-box':!showgoogle}" >
+          <input type="text" placeholder="Ask me anything..." (keyup.enter)="sendMessage()"
+          [(ngModel)]="searchText"/>
+          <mat-icon class="send-btn" (click)="startListening()">mic</mat-icon>          
+          <!-- <mat-icon class="send-btn"> attach_file</mat-icon> -->
+          <mat-icon class="send-btn"  (click)="sendMessage()">send</mat-icon>
+          <!-- <button class="send-btn"><i class="fas fa-paper-plane"></i></button> -->
+        </div>
+      <!-- </div> -->
+    </section>
+  </div>
 </div>
