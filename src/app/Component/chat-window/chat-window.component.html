@@ -15,15 +15,16 @@
       </div>
       <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
 
-      <div style="padding-top: 5px; font-size: small;">
-        <div *ngFor="let chat of chatsBackup" class="chat-tab fa-solid fa-file"(click)="setActiveChat(chat.chatId)">
-          new chat-{{ chat.chatId }}
+      <!-- <div style="padding-top: 5px; font-size: small;"> -->
+        <div *ngFor="let chat of chatsBackup" class="chat-tab"(click)="setActiveChat(chat.chatId)">
+          <mat-icon style="margin-top: 12px;font-size: 25px;"> insert_drive_file</mat-icon> 
+          Chat Window - {{ chat.chatId }}
         </div>
         <!-- <div *ngFor="let chat of chatsBackup">
           <mat-icon > chat</mat-icon>
           <span class="label-space"> Chat Window </span>
         </div> -->
-      </div>        
+      <!-- </div>         -->
       
       <nav class="nav-links" >
         <div *ngIf="isLoggedIn" (click)="manageDoc()">

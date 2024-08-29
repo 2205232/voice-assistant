@@ -27,6 +27,7 @@ interface Message {
 export class ChatWindowComponent {  
   @Input() chat: any;
   constructor(private router: Router,private http: HttpClient, private chatService: ChatSevicesService){ }
+  isLoading: boolean = false;
   isLoggedIn :boolean=false; 
   newchaticon :boolean=false;
   searchText: any = '';
@@ -128,9 +129,11 @@ export class ChatWindowComponent {
   }
 
   sendMessage() {
-    if(this.searchText){
+    if(this.searchText.trim()){
        this.showgoogle=false;
        this.headicon=true;
+       this.messages.push({ text: this.searchText, sender: 'user' });
+       this.isLoading = true;
       let payload ={
         prompt: "Find answer to the following query.Reject questions which are irrelevant.",
         text: this.searchText,
@@ -138,9 +141,12 @@ export class ChatWindowComponent {
         datastore: "ondc-bot-ds_1707487778718"
       }
       this.chatService.getgenerateTest(payload).subscribe((response:any)=>{
-      this.messages.push(response);
-          console.log(response);      
+        this.isLoading = false;
+      this.messages.push({ text: response.fact, sender: 'bot' });
+          console.log( this.messages);      
         })
+        this.isLoading = false;
+        this.searchText = ''; 
     }
    
     // this.showgoogle=false;

@@ -30,8 +30,10 @@ export class ChatSevicesService {
 //  }
 
  getgenerateTest(payload:any){
-  let URL ='https://apps.gcpwkshpdev.com/chat/v2';
-  return this.http.post<any>(URL,payload).pipe(map(response=>response))
+  //let URL ='https://apps.gcpwkshpdev.com/chat/v2';
+  let url='https://catfact.ninja/fact';
+  //return this.http.post<any>(URL,payload).pipe(map(response=>response))
+  return this.http.get<any>(url,payload).pipe(map(response=>response))
 
   // const model =this.generrativeAI.getGenerativeModel({model:'gemini-pro'});
   // const results = model.generateContent(payload);
@@ -48,8 +50,9 @@ export class ChatSevicesService {
 
   addChat(chat: any) {
     this.chatCounter++;   
-    if (this.chatsBackup.length >= 5) {
-      this.chatsBackup.shift(); // Remove the oldest chat backup if limit is reached
+    if (this.chatsBackup.length >= 5 || this.chatCounter>=6) {
+      //this.chatsBackup.shift(); // Remove the oldest chat backup if limit is reached
+      return;
     }
     this.chatsBackupHistory.push({chatId: this.chatCounter,chat});
     console.log(this.chatsBackupHistory);

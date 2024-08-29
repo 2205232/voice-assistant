@@ -1,5 +1,19 @@
-
-<div class="manage-doc">
-    <input type="file" (chnage)="onFileSelected($event)"/>
-    <button (click)="onUpload()">Upload</button>
-</div>
+<div class="file-upload-container">
+    <label for="fileInput" class="upload-label">
+        <input
+        type="file"
+        id="fileInput"
+        (change)="onFileSelected($event)"
+        multiple
+        hidden
+    />
+    <div class="upload-area">
+        <span>Select files to Upload</span>
+    </div>
+    </label>
+    <div class="file-list" *ngIf="selectedFiles.length > 0">
+         {{file.name}} 
+       
+    <button class="upload-button" (click)="uploadFiles()" [disabled]="!selectedFiles.length">
+        uploadFiles</button>
+    </div>
