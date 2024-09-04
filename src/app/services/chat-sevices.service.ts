@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {HttpClient,HttpEvent,HttpParams,HttpResponse} from '@angular/common/http';
+import {HttpClient,HttpEvent,HttpParams,HttpResponse,HttpHeaders, HttpRequest} from '@angular/common/http';
 import { Observable ,BehaviorSubject} from 'rxjs';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import { response } from 'express';
@@ -10,14 +10,16 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class ChatSevicesService {
-  //private generrativeAI:GoogleGenerativeAI;
+  private generrativeAI:GoogleGenerativeAI;
   private chatsBackup: any[] = [];
   chatsBackupHistory: any[] = [];
   chatCounter: number = 0;
 
-  constructor(private http: HttpClient) { 
+  private baseUrl = 'http://34.69.232.114:4200/';
 
-    //this.generrativeAI =new GoogleGenerativeAI(environment.API_KEY)
+  constructor(private http: HttpClient) { 
+    //this.generrativeAI =new GoogleGenerativeAI(environment.API_KEY);
+    this.generrativeAI =new GoogleGenerativeAI('AIzaSyCs7nq4rVZ9KNt1GbtH0da9KQvfVAMC-OI');    
   }
 
 //  async generateTest(payload:any){
@@ -30,24 +32,20 @@ export class ChatSevicesService {
 //  }
 
  getgenerateTest(payload:any){
-  //let URL ='https://apps.gcpwkshpdev.com/chat/v2';
-  let url='https://catfact.ninja/fact';
-  //return this.http.post<any>(URL,payload).pipe(map(response=>response))
-  return this.http.get<any>(url,payload).pipe(map(response=>response))
-
-  // const model =this.generrativeAI.getGenerativeModel({model:'gemini-pro'});
-  // const results = model.generateContent(payload);
-  // const response = await results.response;
-  // const text =response.text();
-  //console.log(text);
+  let headers = new HttpHeaders({
+    'Content-Type': 'application/json',
+  });
+  let headeroptions = { headers: headers };
+  let URL ='https://apps.gcpwkshpdev.com/chat/v2';
+  //let url='https://catfact.ninja/fact';
+  return this.http.post<any>(URL,payload,headeroptions).pipe(map(response=>response))
+  //return this.http.get<any>(url,payload).pipe(map(response=>response))
 
  }
-
 
   getChatsBackup() {
     return this.chatsBackup;
   }
-
   addChat(chat: any) {
     this.chatCounter++;   
     if (this.chatsBackup.length >= 5 || this.chatCounter>=6) {
@@ -58,5 +56,22 @@ export class ChatSevicesService {
     console.log(this.chatsBackupHistory);
     this.chatsBackup=this.chatsBackupHistory;
 
+  }
+
+  upload(file: File): Observable<HttpEvent<any>> {
+    const formData: FormData = new FormData();
+
+    formData.append('file', file);
+
+    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
+      reportProgress: true,
+      responseType: 'json'
+    });
+
+    return this.http.request(req);
+  }
+
+  getFiles(): Observable<any> {
+    return this.http.get(`${this.baseUrl}/files`);
   }
 }

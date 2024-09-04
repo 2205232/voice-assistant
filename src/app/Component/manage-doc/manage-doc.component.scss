@@ -1,58 +1,41 @@
-.file-upload-container {
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-    text-align: center;
-    padding: 20px;
-    border: 2px dashed #007bff;
-    border-radius: 10px;
-    background-color: #f9f9f9;
-}
-.upload-label {
-    display: block;
-    cursor: pointer;
-    margin-bottom: 20px;
-}
-
-.upload-area {
-    padding: 30px;
-    color: #007bff;
-    font-weight: bold;
-    background-color: #fff;
-    border-radius:10px ;
-    transition: background-color 0.3s;
-}
-.upload-area:hover {
-    background-color: #e6f7ff;
-}
-.file-list {
-    margin-top: 20px;
-    text-align: left;
-}
-.file-item {
+.file-upload-wrapper {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: #fff;
-       
-}
-.remove-button:hover {
-    background-color: #d32f2f;
-}
-.upload-button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #28a745;
-    color: #fff;
-    bottom: none;
-    border-radius: 5px;
+    flex-direction: column;
+    border: 2px dashed #ccc;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 10px;
     cursor: pointer;
-}
-.upload-button-disabled {
-    background-color: #ccc;
-    cursor: not-allowed;
-}
+  }
+  
+  .file-upload-wrapper.success {
+    border-color: green;
+  }
+  
+  .file-upload-wrapper.error {
+    border-color: red;
+  }
+  
+  .file-dropper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .image-name {
+    font-weight: bold;
+  }
+  
+  .image-preview {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+  }
+  
+  .delete-icon {
+    cursor: pointer;
+    color: red;
+  }

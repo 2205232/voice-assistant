@@ -1,19 +1,29 @@
-<div class="file-upload-container">
-    <label for="fileInput" class="upload-label">
-        <input
-        type="file"
-        id="fileInput"
-        (change)="onFileSelected($event)"
-        multiple
-        hidden
-    />
-    <div class="upload-area">
-        <span>Select files to Upload</span>
+<div class="file-upload-wrapper" [class.success]="uploadSuccess" [class.error]="uploadError" (drop)="onFileDrop($event)"
+  (dragover)="onDragOver($event)">
+  <input type="file" accept="image/*" (change)="onFileChange($event)" hidden #fileInput />
+  <div class="file-dropper" (click)="fileInput.click()">
+    <mat-icon>upload</mat-icon>
+    <p>{{ "Upload File" }}</p>
+    <div *ngIf="imageName()">
+      <div *ngIf="selectedFile || imagePreview">
+        <img [src]="imagePreview()" alt="Image Preview" class="image-preview" />
+        <p>
+          <span class="image-name">{{ imageName() }}</span> ({{
+          fileSize()
+          }} KB)
+        </p>
+      </div>
     </div>
-    </label>
-    <div class="file-list" *ngIf="selectedFiles.length > 0">
-         {{file.name}} 
-       
-    <button class="upload-button" (click)="uploadFiles()" [disabled]="!selectedFiles.length">
-        uploadFiles</button>
-    </div>
+  </div>
+</div>
+
+@if (this.uploadSuccess)
+{
+<div class="d-flex flex-column align-items-center">
+  <h6>File is uploaded</h6>
+  <div class="d-flex justify-content-around w-25">
+    <div><mat-icon>send</mat-icon><span class="align-top ps-1">Upload</span></div>
+    <div class="delete-icon" (click)="removeImage()"><mat-icon>delete</mat-icon><span class="align-top ps-1">Delete</span></div>
+  </div>
+</div>
+}

@@ -11,25 +11,33 @@
   <div class="main-content">
     <aside class="sidebar">
       <div class="logo">
-          <img src="/assets/logo.png">
+          <img src="/assets/vishwakosh.png">
       </div>
       <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
 
-      <!-- <div style="padding-top: 5px; font-size: small;"> -->
-        <div *ngFor="let chat of chatsBackup" class="chat-tab"(click)="setActiveChat(chat.chatId)">
-          <mat-icon style="margin-top: 12px;font-size: 25px;"> insert_drive_file</mat-icon> 
-          Chat Window - {{ chat.chatId }}
+      
+        <div *ngFor="let chat of chatsBackup" class="chat-tab">
+          <div style="cursor: pointer;" (click)="setActiveChat(chat.chatId)">
+            <mat-icon style="margin-top: 12px;font-size: 25px;"> insert_drive_file</mat-icon> 
+            Chat Window - {{ chat.chatId }}
+          </div>
         </div>
         <!-- <div *ngFor="let chat of chatsBackup">
           <mat-icon > chat</mat-icon>
           <span class="label-space"> Chat Window </span>
         </div> -->
-      <!-- </div>         -->
+              
       
-      <nav class="nav-links" >
+      <ul style="position: absolute; bottom: 0;margin-right: 30px;">
+        <!-- <div style=" font-family: Product Sans, Arial, sans-serif;
+        font-size: 22px ;
+        color: #5f6368;">
+          Meet          
+        </div> -->
         <div *ngIf="isLoggedIn" (click)="manageDoc()">
           <mat-icon class="adjust-icon"  >cloud_upload</mat-icon>
-          <span class="label-space">Upload Document</span><br></div>
+          <span class="label-space">Upload Document</span><br>
+        </div>
           <mat-icon class="adjust-icon">history</mat-icon><span class="label-space">History</span><br>
           <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br>
           <button  mat-stroked-button color="accent"  *ngIf="!isLoggedIn" (click)="userlogin()">
@@ -37,11 +45,11 @@
           <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
               <mat-icon>exit_to_app</mat-icon> Login
           </button>
-      </nav>
+        </ul>
     </aside>
 
     <section class="assistant-section ">
-      <h1  *ngIf="showgoogle">  <img src="/assets/gassistant.jpg"></h1>
+      <h1  *ngIf="showgoogle">  <img src="/assets/Biswakosh.png"></h1>
       <!-- <div class="messages-container" *ngIf="activeChatId" [ngClass]="{'res-msg':!showgoogle}">
         <div *ngFor="let chat of chatsBackup[chat]" class="message" [ngClass]="{'from-user':chat.sender === 'user'}">
           <mat-icon *ngIf="headicon" >account_circle</mat-icon>
@@ -53,6 +61,8 @@
             <mat-icon *ngIf="headicon" >account_circle</mat-icon>
             {{message.text}}
           </div>
+          <!-- Show a loading spinner while waiting for the bot's response -->
+         <div *ngIf="isLoading" class="loading-spinner">Bot is typing...</div>
         </div>  
         <div class="search-bar"[ngClass]="{'input-box':!showgoogle}" >
           <input type="text" placeholder="Ask me anything..." (keyup.enter)="sendMessage()"
