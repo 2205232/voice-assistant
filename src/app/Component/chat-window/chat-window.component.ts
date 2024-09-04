@@ -155,7 +155,8 @@ export class ChatWindowComponent implements OnInit {
 
     if (this.searchText.trim()) {
       // Display the user's message
-
+      this.showgoogle=false;
+       this.headicon=true;
       this.messages.push({ text: this.searchText, sender: 'user' });
       // Prepare the JSON payload for the API
 

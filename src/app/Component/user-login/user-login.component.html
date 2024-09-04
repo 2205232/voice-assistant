@@ -1,8 +1,8 @@
 <div class="login-container">
     <div class="login-left">
       <h2>Login! 👋</h2>
-      <button class="btn btn-google">Sign in with Google</button>
-      <p>or Login with Email</p>
+      <!-- <button class="btn btn-google">Sign in with Google</button>
+      <p>or Login with Email</p> -->
       <form  (ngSubmit)="onSubmit()">
         <label for="email">Email</label>
         <input type="email" [(ngModel)]="email" name="email" placeholder="test@gmail.com" required>
@@ -12,7 +12,7 @@
         <button type="submit" class="btn btn-signin">Sign In</button>
         
       </form>
-      <p>Don't have an account? <a href="#">Sign Up Now</a></p>
+      <p>Don't have an account? <a >Sign Up Now</a></p>
       <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
     </div>
   </div>
