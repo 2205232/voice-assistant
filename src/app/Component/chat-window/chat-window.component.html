@@ -11,7 +11,7 @@
   <div class="main-content">
     <aside class="sidebar">
       <div class="logo">
-          <img src="/assets/sidelogo.jpg" style="width: 60px;height:auto;margin-right: 10px;">
+          <img src="/assets/sidelogo.jpg" style="width: 60px;height:auto;margin-right: 5px;">
           <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
           vertical-align: super;
           font-size: 18px ;
@@ -53,7 +53,12 @@
     </aside>
 
     <section class="assistant-section ">
-      <h1  *ngIf="showgoogle">  <img src="/assets/mainlogo.jpg"></h1>
+      <h1  *ngIf="showgoogle">  <img src="/assets/mainlogo.jpg" style="width: 130px;">
+        <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
+          vertical-align: super;font-weight: bold;
+          font-size: 30px ;
+          color: #5f6368;">Vishwakosh</span>
+      </h1>
       <!-- <div class="messages-container" *ngIf="activeChatId" [ngClass]="{'res-msg':!showgoogle}">
         <div *ngFor="let chat of chatsBackup[chat]" class="message" [ngClass]="{'from-user':chat.sender === 'user'}">
           <mat-icon *ngIf="headicon" >account_circle</mat-icon>
