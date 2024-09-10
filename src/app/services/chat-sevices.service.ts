@@ -60,8 +60,6 @@ export class ChatSevicesService {
 
   }
 
-
-
   uploadFiles(files: File[]): Observable<any> {
     const formData: FormData = new FormData();
     files.forEach(file => {

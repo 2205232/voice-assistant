@@ -25,7 +25,6 @@ const upload = multer({
 
 // Upload multiple files
 app.post('/', upload.array('files'), async (req, res) => {
-  console.log(upload.array('files'));
   try {
     const files = req.files;
 
