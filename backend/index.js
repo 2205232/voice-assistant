@@ -11,12 +11,12 @@ const cors = require("cors");
 app.use(cors());
 
 //Set up Google Cloud Storage
-const storage = new Storage({
-  keyFilename: path.join(__dirname, 'tcs-alphabet-genai.json'),
-  projectId: 'tcs-alphabet-genai',
-});
+// const storage = new Storage({
+//   keyFilename: path.join(__dirname, 'tcs-alphabet-genai.json'),
+//   projectId: 'tcs-alphabet-genai',
+// });
 
-const bucket = storage.bucket('vishakosh_bucket');
+//const bucket = storage.bucket('vishakosh_bucket');
 
 // Middleware for file upload using Multer
 const upload = multer({

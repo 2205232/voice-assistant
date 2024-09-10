@@ -21,7 +21,7 @@ export class ChatSevicesService {
 
   constructor(private http: HttpClient) { 
     //this.generrativeAI =new GoogleGenerativeAI(environment.API_KEY);
-    this.generrativeAI =new GoogleGenerativeAI('AIzaSyCs7nq4rVZ9KNt1GbtH0da9KQvfVAMC-OI');    
+   // this.generrativeAI =new GoogleGenerativeAI('AIzaSyCs7nq4rVZ9KNt1GbtH0da9KQvfVAMC-OI');    
   }
 
 //  async generateTest(payload:any){
