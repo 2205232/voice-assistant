@@ -15,7 +15,9 @@ export class ChatSevicesService {
   chatsBackupHistory: any[] = [];
   chatCounter: number = 0;
 
-  private baseUrl = 'http://34.69.232.114:4200/';
+  
+  private uploadUrl = 'http://localhost:3000/';
+  private fetchFilesUrl = 'http://localhost:3000/';
 
   constructor(private http: HttpClient) { 
     //this.generrativeAI =new GoogleGenerativeAI(environment.API_KEY);
@@ -58,20 +60,17 @@ export class ChatSevicesService {
 
   }
 
-  upload(file: File): Observable<HttpEvent<any>> {
+
+
+  uploadFiles(files: File[]): Observable<any> {
     const formData: FormData = new FormData();
-
-    formData.append('file', file);
-
-    const req = new HttpRequest('POST', `${this.baseUrl}/upload`, formData, {
-      reportProgress: true,
-      responseType: 'json'
+    files.forEach(file => {
+      formData.append('files', file, file.name);
     });
-
-    return this.http.request(req);
+    return this.http.post(this.uploadUrl, formData);
   }
 
   getFiles(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/files`);
+    return this.http.get(this.fetchFilesUrl);
   }
 }

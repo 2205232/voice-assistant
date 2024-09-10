@@ -9,25 +9,22 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { ChatSevicesService } from '../../services/chat-sevices.service';
-
 import { catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
+import { NgxSkeletonLoaderModule } from 'ngx-skeleton-loader';
 
 
 interface Message {
-
   text: string;
-
   sender: 'user' | 'bot';
-
 }
 
 @Component({
-  selector: 'app-chat-window',
+  selector: 'app-chat-window', 
   standalone: true,
   imports: [
     RouterOutlet, MatSidenavModule, RouterModule, FormsModule,
-    MatListModule, MatIconModule, MatButtonModule, CommonModule
+    MatListModule, MatIconModule, MatButtonModule, CommonModule,NgxSkeletonLoaderModule,
   ],
   templateUrl: './chat-window.component.html',
   styleUrls: ['./chat-window.component.scss']
@@ -38,23 +35,14 @@ export class ChatWindowComponent implements OnInit {
   @Input() chat: any;
   isLoading: boolean = false;
   isLoggedIn: boolean = false; 
-
   newchaticon: boolean = false;
-
   searchText: any = '';
-
   messages: Message[] = [];
-
   showgoogle: boolean = true;
-
   headicon: boolean = false;
-
   currentChat: any = {}; // Initialize your chat model
-
-  chatsBackup: any[] = []; 
-  
-  activeChatId: number | null = null;
-  
+  chatsBackup: any[] = [];   
+  activeChatId: number | null = null;  
   chatCounter: number = 0;
 
   constructor(private router: Router, private http: HttpClient, private chatService: ChatSevicesService) { }
@@ -64,28 +52,26 @@ export class ChatWindowComponent implements OnInit {
     this.isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
   }
 
-  userlogin() {    
-
+  userlogin() {  
     this.router.navigateByUrl('/Login');
-
   }
 
   userlogout() { 
 
     localStorage.removeItem('isAuthenticated');
-
     this.isLoggedIn = false;
-
     this.router.navigate(['/']);
-
   }
 
   createNewChat() {
-
     this.chatService.addChat(this.messages);  
-
     this.messages = [];
+    this.chatsBackup = this.chatService.getChatsBackup();
 
+  }
+  backupChat() {
+    this.chatService.addChat(this.messages);  
+    this.messages = [];
     this.chatsBackup = this.chatService.getChatsBackup();
 
   }
@@ -100,7 +86,7 @@ export class ChatWindowComponent implements OnInit {
       console.log(this.messages); 
     }
     
-    console.log(inex);
+    
   }
 
   manageDoc(){
@@ -158,8 +144,8 @@ export class ChatWindowComponent implements OnInit {
       this.showgoogle=false;
        this.headicon=true;
       this.messages.push({ text: this.searchText, sender: 'user' });
-      // Prepare the JSON payload for the API
-
+      this.isLoading = true;
+      // Prepare the JSON payload for the API     
       const payload = {
 
         prompt: "Find answer to the following query.Reject questions which are irrelevant.Do not add any disclaimer section in the response:",
@@ -182,14 +168,17 @@ export class ChatWindowComponent implements OnInit {
         })
       ).subscribe(
         response => {
-          if (response && response.results && response.results.length > 0) {
+          if (response && response.results && response.results.length > 0) {           
             const botResponse = response.results[0].part.text || 'No response from the bot';
+            this.isLoading = false;
             this.messages.push({ text: botResponse, sender: 'bot' });
           } else {
+            this.isLoading = false;
             this.messages.push({ text: 'No response received.', sender: 'bot' });
           }
         }
       );
+      
       // Clear the search box
       this.searchText = '';
     }

@@ -1,49 +1,89 @@
 .progress-bar {
-    padding: 0;
-  }
-  
-  .progress {
-    width: 50px;
-  }
-  
-  #fileInput {
-    position: absolute;
-    cursor: pointer;
-    z-index: 10;
-    opacity: 0;
-    height: 100%;
-    left: 0px;
-    top: 0px;
-  }
-  
-  .mat-toolbar-single-row {
-    height: auto !important;
-    background: transparent;
-    padding: 0;
-  }
-  
-  .mat-toolbar-single-row button {
-    width: 100px;
-  }
-  
-  .mat-form-field {
-    width: 50%;
-  }
-  
-  .mat-mdc-form-field {
-    display: block;
-  }
-  
-  .message {
-    background-color: #ddd;
-    padding: 15px;
-    color: #333;
-    border: #aaa solid 1px;
-    border-radius: 4px;
-    margin-bottom: 10px;
-  }
+  padding: 0;
+}
 
-  .container {
-    width: 500px;
-    margin: 20px auto;
-  }
+.progress {
+  width: 50px;
+  height: 4px;
+  background-color: #e0e0e0; 
+  border-radius: 2px;
+  position: relative;
+}
+
+.progress::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%; 
+  background-color: #4285f4; /* Google blue */
+  border-radius: 2px 0 0 2px;
+}
+
+#fileInput {
+  position: absolute;
+  cursor: pointer;
+  z-index: 10;
+  opacity: 0;
+  height: 100%;
+  left: 0;
+  top: 0;
+}
+
+.mat-toolbar-single-row {
+  height: auto !important;
+  background-color: gray; 
+  padding: 0;
+}
+
+.mat-toolbar-single-row button {
+  width: 100px;
+  background-color: orange; 
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); 
+  text-transform: uppercase;
+}
+
+.mat-form-field {
+  width: 50%;
+  margin: 10px 0;
+}
+
+.mat-mdc-form-field {
+  display: block;
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.message {
+  background-color: #f5f5f5; 
+  padding: 15px;
+  color: #333;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12); 
+  margin-bottom: 10px;
+}
+
+.container {
+  width: 500px;
+  margin: 20px auto;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Elevation */
+  padding: 20px;
+}
+
+/////
+table {
+  width: 100%;
+}
+
+
+button {
+  margin-top: 10px;
+}
