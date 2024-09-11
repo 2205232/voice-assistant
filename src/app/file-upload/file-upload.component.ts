@@ -66,16 +66,17 @@ export class FileUploadComponent implements OnInit {
       // }
   }  
 
-  upload(){
+  upload(): void{
     if (this.filesToUpload.length > 0) {
       this.uploadService.uploadFiles(this.filesToUpload).subscribe(
-        (response:any) => {
+        (response) => {
+          console.log(response);
         this.fetchFiles();
       },
-      (error: any) => {
-        console.error('Upload failed:', error);
-      }
-    );
+      (error) => {
+          console.error('Upload failed:', error);
+        }
+      );
     }   
     // if (this.currentFile) {
     //   this.uploadService.uploadFiles(this.currentFile).subscribe({

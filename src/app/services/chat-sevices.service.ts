@@ -6,6 +6,7 @@ import { response } from 'express';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -60,7 +61,7 @@ export class ChatSevicesService {
 
   }
 
-  uploadFiles(files: File[]): Observable<any> {
+  uploadFiles(files: File[]): Observable<any>{
     const formData: FormData = new FormData();
     files.forEach(file => {
       formData.append('files', file, file.name);
@@ -71,4 +72,16 @@ export class ChatSevicesService {
   getFiles(): Observable<any> {
     return this.http.get(this.fetchFilesUrl);
   }
+
+    // // Save chat history to backend
+    // saveChatHistory(userId: string, message: string): Observable<any> {
+    //   const payload = { userId, message };
+    //   return this.http.post(${this.apiUrl}/saveChatHistory, payload);
+    // }
+  
+    // // Fetch chat history from backend
+    // getChatHistory(userId: string): Observable<any> {
+    //   return this.http.get(${this.apiUrl}/getChatHistory/${userId});
+    // }
+  
 }

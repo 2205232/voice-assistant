@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
@@ -5,19 +6,23 @@ const path = require('path');
 const port = 3000;
 const { BigQuery } = require('@google-cloud/bigquery');
 const bigquery = new BigQuery();
+const bodyParser = require('body-parser');
 // Initialize Express
 const app = express();
 const cors = require("cors");
 app.use(cors());
+app.use(bodyParser.json());
 
-//Set up Google Cloud Storage
-// const storage = new Storage({
-//   keyFilename: path.join(__dirname, 'tcs-alphabet-genai.json'),
-//   projectId: 'tcs-alphabet-genai',
-// });
+// Parse the GCP_CREDENTIALS environment variable
+const credentials = JSON.parse(process.env.GCP_CREDENTIALS);
 
-//const bucket = storage.bucket('vishakosh_bucket');
+// Initialize Google Cloud Storage with the parsed credentials
+const storage = new Storage({ credentials });
 
+const bucketName = process.env.GCP_BUCKET_NAME;
+const bucket = storage.bucket(bucketName);
+const datasetId = 'tcs-alphabet-genai.chat_history_dataset';
+const tableId = 'chat_history';
 // Middleware for file upload using Multer
 const upload = multer({
   storage: multer.memoryStorage(),
@@ -35,18 +40,18 @@ app.post('/', upload.array('files'), async (req, res) => {
       });
 
       blobStream.on('error', (err) => {
-        console.log(err);
         res.status(500).send('Unable to upload');
       });
 
       blobStream.end(file.buffer);
     });
 
-    await Promise.all(uploadPromises);
-    res.status(200).send('Files uploaded.');
+    const fileInfos = await Promise.all(uploadPromises);
+    res.status(200).json(fileInfos);
+
   } catch (error) {
-    console.error(error);
-    res.status(500).send('Upload failed.');
+
+    res.status(500).json({message:'Upload failed.',error:error.message});
   }
 });
 
@@ -71,18 +76,44 @@ app.get('/', async (req, res) => {
 });
 
 
+// Insert chat history into BigQuery
+async function insertChatHistory(userId, message) {
+  const rows = [{ userId, message, timestamp: new Date() }];
 
-async function insertChatHistory(sessionId, userId, message) {
-    const datasetId = 'dataset_id';
-    const tableId = 'chat_history';
-
-    const rows = [
-        { session_id: sessionId, user_id: userId, message: message, timestamp: new Date().toISOString() }
-    ];
-
+  try {
     await bigquery.dataset(datasetId).table(tableId).insert(rows);
-    console.log(`Inserted chat history for session: ${sessionId}`);
+    //console.log(Inserted ${rows.length} rows);
+  } catch (error) {
+    console.error('ERROR:', error);
+  }
 }
+
+// Endpoint to store chat history
+app.post('/saveChatHistory', async (req, res) => {
+  const { userId, message } = req.body;
+
+  await insertChatHistory(userId, message);
+  res.sendStatus(200);
+});
+
+
+
+// Endpoint to get chat history
+app.get('/getChatHistory/:userId', async (req, res) => {
+  const userId = req.params.userId;
+
+  const history = await getChatHistory(userId);
+  res.json(history);
+});
+// async function insertChatHistory(sessionId, userId, message) {  
+
+//     const rows = [
+//         { session_id: sessionId, user_id: userId, message: message, timestamp: new Date().toISOString() }
+//     ];
+
+//     await bigquery.dataset(datasetId).table(tableId).insert(rows);
+//     console.log(`Inserted chat history for session: ${sessionId}`);
+// }
 
 // async function getChatHistory(sessionId) {
 //   const query = SELECT * FROM \`project_id.dataset_id.chat_history\ WHERE session_id = @sessionId ORDER BY timestamp ASC`;
