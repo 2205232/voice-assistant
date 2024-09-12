@@ -44,11 +44,17 @@ export class ChatWindowComponent implements OnInit {
   chatsBackup: any[] = [];   
   activeChatId: number | null = null;  
   chatCounter: number = 0;
+  Chathistory:any[]=[];
+
+  userId: string = 'user123'; // In a real app, you should dynamically set this
+  message: string = '';
+  chatHistory: { message: string, timestamp: Date }[] = [];
 
   constructor(private router: Router, private http: HttpClient, private chatService: ChatSevicesService) { }
 
 
   ngOnInit() {
+    this.newchaticon=true;
     this.isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
   }
 
@@ -94,6 +100,9 @@ export class ChatWindowComponent implements OnInit {
     this.router.navigate(['/managedoc']); 
 
   }
+  showHistory(){
+    this.router.navigate(['/History']); 
+  }
 
   AudiotoFAQ(){
     this.router.navigate(['/AudioToFaq']); 
@@ -138,7 +147,6 @@ export class ChatWindowComponent implements OnInit {
   }
 
   sendMessage() {
-
     if (this.searchText.trim()) {
       // Display the user's message
       this.showgoogle=false;
@@ -171,18 +179,46 @@ export class ChatWindowComponent implements OnInit {
           if (response && response.results && response.results.length > 0) {           
             const botResponse = response.results[0].part.text || 'No response from the bot';
             this.isLoading = false;
+            this.newchaticon = false;
             this.messages.push({ text: botResponse, sender: 'bot' });
           } else {
             this.isLoading = false;
+            this.newchaticon = false;
             this.messages.push({ text: 'No response received.', sender: 'bot' });
           }
         }
       );
-      
+      this.Chathistory=this.messages;
+      console.log(this.userId);
+      if(this.Chathistory.length > 0){
+        this.chatService.saveChatHistory(this.userId, this.Chathistory).subscribe(
+          (response) => {
+            console.log('Message saved:', response);
+           // this.chatHistory.push({ message: this.message, timestamp: new Date() });
+            //this.message = ''; // Clear the input after sending
+          });
+      }
       // Clear the search box
       this.searchText = '';
     }
 
   }
+
+   // Function to send chat message and save it
+  //  sendhistoryMessage() {
+  //   if (this.message.trim()) {
+  //     // Save message to chat history
+  //     this.chatService.saveChatHistory(this.userId, this.message).subscribe(
+  //       (response) => {
+  //         console.log('Message saved:', response);
+  //         this.chatHistory.push({ message: this.message, timestamp: new Date() });
+  //         this.message = ''; // Clear the input after sending
+  //       },
+  //       (error) => {
+  //         console.error('Error saving message:', error);
+  //       }
+  //     );
+  //   }
+  // }
 
 }

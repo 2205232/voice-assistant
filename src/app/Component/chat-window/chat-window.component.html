@@ -15,9 +15,9 @@
           <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
           vertical-align: super;
           font-size: 18px ;
-          color: #5f6368;">Vishwakosh</span>
+          color: #5f6368;">Bishwakosh</span>
       </div>
-      <button mat-flat-button   (click)="createNewChat()">+ New Chat</button>
+      <button mat-flat-button  [disabled]="newchaticon" (click)="createNewChat()">+ New Chat</button>
 
       
         <div *ngFor="let chat of chatsBackup" class="chat-tab">
@@ -42,22 +42,22 @@
           <mat-icon class="adjust-icon"  >cloud_upload</mat-icon>
           <span class="label-space">Upload Document</span><br>
         </div>
-          <mat-icon class="adjust-icon">history</mat-icon><span class="label-space">History</span><br>
-          <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br>
+          <mat-icon class="adjust-icon" (click)="showHistory()">history</mat-icon><span class="label-space">History</span><br>
+          <mat-icon class="adjust-icon">mic_none</mat-icon><span class="label-space">Audio to FAQ's</span><br><br>
           <button  mat-stroked-button color="accent"  *ngIf="!isLoggedIn" (click)="userlogin()">
             <mat-icon class="adjust-icon">exit_to_app</mat-icon> Login</button>
           <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
-              <mat-icon>exit_to_app</mat-icon> Login
+              <mat-icon>exit_to_app</mat-icon> Log Out
           </button>
         </ul>
     </aside>
 
     <section class="assistant-section ">
-      <h1  *ngIf="showgoogle">  <img src="/assets/mainlogo.jpg" style="width: 130px;">
-        <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
+      <h1  *ngIf="showgoogle">  <img src="/assets/Biswakosh.png"  style="width: 230px;">
+        <!-- <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
           vertical-align: super;font-weight: bold;
           font-size: 30px ;
-          color: #5f6368;">Vishwakosh</span>
+          color: #5f6368;">Vishwakosh</span> -->
       </h1>
       <!-- <div class="messages-container" *ngIf="activeChatId" [ngClass]="{'res-msg':!showgoogle}">
         <div *ngFor="let chat of chatsBackup[chat]" class="message" [ngClass]="{'from-user':chat.sender === 'user'}">

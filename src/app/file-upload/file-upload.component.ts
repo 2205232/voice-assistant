@@ -31,11 +31,14 @@ export class FileUploadComponent implements OnInit {
   pageIndex = 0;
   fileName = 'Select File';
   fileInfos?: Observable<any>;
-  selectedFiles: never[] | undefined;
+  selectedFiles: any[]=[];
   selFiles: FileList | null | undefined;
   filesToUpload: File[] = [];
   uploadedFiles: any[] = [];
-  
+
+  chatHistory: any[] = [];
+  userId: string = 'user123'; // Replace with dynamic user ID if needed
+
   @ViewChild(MatPaginator) paginator: MatPaginator;
   constructor(private uploadService: ChatSevicesService) { }
   displayedColumns: string[] = ['name', 'url','Size','Type','Action'];
@@ -49,24 +52,19 @@ export class FileUploadComponent implements OnInit {
   // }
 
   fileSelectionChanged(event: any)  {
-    this.filesToUpload = Array.from(event.target.files);
-    //this.filesToUpload = Array.from();
-      // this.selectedFiles = [];   
-      // const element = event.currentTarget as HTMLInputElement;
-      // this.selFiles = element.files;
-   
-      // let fileList: FileList | null = element.files;
-      // if (fileList) {
-      //   for (let itm in fileList)
-      //   {
-      //     let item: File = fileList[itm];
-      //     if ((itm.match(/\d+/g) != null) && (!this.selectedFiles))
-      //         this.selectedFiles; 
-      //   }
-      // }
-  }  
+    this.selectedFiles = Array.from(event.target.files);
+    
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      this.filesToUpload.push(this.selectedFiles[i]);
+    }
+  }
 
-  upload(): void{
+  // Removes a file from the selected list
+  removeFile(index: number) {
+    this.filesToUpload.splice(index, 1);
+  }
+
+  upload() {
     if (this.filesToUpload.length > 0) {
       this.uploadService.uploadFiles(this.filesToUpload).subscribe(
         (response) => {
@@ -123,5 +121,6 @@ export class FileUploadComponent implements OnInit {
     this.pageSize = event.pageSize;
     this.fetchFiles();
 }
+
  
 }

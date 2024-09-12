@@ -1,0 +1,9 @@
+<p>history works!</p>
+<div class="chat-history">
+    <h3>Chat History</h3>
+    <ul>
+      <li *ngFor="let chat of chatHistory">
+        <strong>{{ chat.timestamp | date:'short' }}:</strong> {{ chat.message }}
+      </li>
+    </ul>
+  </div>

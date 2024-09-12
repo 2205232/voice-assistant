@@ -64,12 +64,32 @@
       </mat-card-content>
     </mat-card>
   </div> -->
-  <div style =" height: 80px;">
-    <input type="file" (change)="fileSelectionChanged($event)" multiple>
-    <button (click)="upload()">Upload</button>
+  <div style =" height: 60px;">
+    <!-- <input type="file" (change)="fileSelectionChanged($event)" multiple>
+    <button (click)="upload()">Upload</button> -->
+
+    <mat-form-field>
+        <mat-toolbar>
+          <input matInput [value]="fileName" />            
+          <button  mat-flat-button (click)="upload()"  >Upload  </button>
+          </mat-toolbar>       
+          <input type="file" (change)="fileSelectionChanged($event)" multiple>
+          <div *ngIf="filesToUpload.length > 0">
+           <span *ngFor="let file of filesToUpload; let i = index">
+              {{ file.name }}
+              <button (click)="removeFile(i)">Delete</button>
+            </span>
+            <!-- <ul>
+              <li *ngFor="let file of filesToUpload; let i = index">
+                {{ file.name }}
+                <button (click)="removeFile(i)">Delete</button>
+              </li>
+            </ul> -->
+          </div>
+    </mat-form-field>
     
   </div>
-  <div>
+  <div style="padding-top: 20px;">
   <table mat-table [dataSource]="uploadedFiles" class="mat-elevation-z8">
     
     <ng-container matColumnDef="name">

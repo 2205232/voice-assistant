@@ -5,84 +5,102 @@ const { Storage } = require('@google-cloud/storage');
 const path = require('path');
 const port = 3000;
 const { BigQuery } = require('@google-cloud/bigquery');
-const bigquery = new BigQuery();
-const bodyParser = require('body-parser');
+
 // Initialize Express
 const app = express();
+app.use(express.json());
 const cors = require("cors");
 app.use(cors());
-app.use(bodyParser.json());
 
-// Parse the GCP_CREDENTIALS environment variable
+// Initialize Multer (for handling file uploads)
+const storageEngine = multer.memoryStorage();
+const upload = multer({ storage: storageEngine });
+
+// Load GCP credentials from environment variable
 const credentials = JSON.parse(process.env.GCP_CREDENTIALS);
 
-// Initialize Google Cloud Storage with the parsed credentials
+// Initialize Google Cloud Storage
 const storage = new Storage({ credentials });
-
 const bucketName = process.env.GCP_BUCKET_NAME;
 const bucket = storage.bucket(bucketName);
-const datasetId = 'tcs-alphabet-genai.chat_history_dataset';
-const tableId = 'chat_history';
-// Middleware for file upload using Multer
-const upload = multer({
-  storage: multer.memoryStorage(),
-});
-
-// Upload multiple files
+const bigquery = new BigQuery({ credentials });
+const datasetId = 'chat_history_dataset';
+const tableId = 'chat_history_demo';
+const project_id = process.env.project_id;
+// POST: Upload multiple files to Google Cloud Storage
 app.post('/', upload.array('files'), async (req, res) => {
   try {
-    const files = req.files;
+    const uploadedFiles = [];
 
-    const uploadPromises = files.map((file) => {
+    // Loop through each file and upload to GCP bucket
+    for (const file of req.files) {
       const blob = bucket.file(file.originalname);
       const blobStream = blob.createWriteStream({
         resumable: false,
       });
 
+      // Handle errors in the stream
       blobStream.on('error', (err) => {
-        res.status(500).send('Unable to upload');
+        console.error('Blob stream error:', err);
+        return res.status(500).send({ message: 'Upload failed.' });
       });
 
+      // Handle the finish of the upload stream
+      blobStream.on('finish', () => {
+        const publicUrl = `https://storage.googleapis.com/${bucket.name}/${blob.name}`;
+        uploadedFiles.push({
+          name: file.originalname,
+          size: file.size,
+          type: file.mimetype,
+          url: publicUrl,
+        });
+
+        if (uploadedFiles.length === req.files.length) {
+          // Respond once all files are uploaded
+          res.status(200).send(uploadedFiles);
+        }
+      });
+
+      // Start writing the file to the bucket
       blobStream.end(file.buffer);
-    });
-
-    const fileInfos = await Promise.all(uploadPromises);
-    res.status(200).json(fileInfos);
-
+    }
   } catch (error) {
-
-    res.status(500).json({message:'Upload failed.',error:error.message});
+    console.error('Error uploading files:', error);
+    res.status(500).send({ message: 'Something went wrong!' });
   }
 });
 
-// Get file list
+// GET: Fetch all files from the Google Cloud Storage bucket
 app.get('/', async (req, res) => {
   try {
     const [files] = await bucket.getFiles();
-    console.log(files);
-    const fileList = await Promise.all(files.map(async file => {
-      const [metadata] = await file.getMetadata();
-      return {
-        name: file.name,
-        size: metadata.size,
-        type: metadata.contentType,
-        url: `https://storage.googleapis.com/${bucket.name}/${file.name}`,
-      };
-    }));
-    res.json(fileList);
+    const fileList = await Promise.all(
+      files.map(async (file) => {
+        const [metadata] = await file.getMetadata();
+        return {
+          name: file.name,
+          size: metadata.size,
+          type: metadata.contentType,
+          url: `https://storage.googleapis.com/${bucket.name}/${file.name}`,
+        };
+      })
+    );
+    res.status(200).send(fileList);
   } catch (error) {
-    res.status(500).send('Failed to fetch files.');
+    console.error('Error fetching files:', error);
+    res.status(500).send({ message: 'Something went wrong!' ,error:error.message});
   }
 });
 
-
 // Insert chat history into BigQuery
-async function insertChatHistory(userId, message) {
-  const rows = [{ userId, message, timestamp: new Date() }];
-
+async function insertChatHistory(user_id, message) {  
+  console.log(project_id);
+  const rows = [{ user_id, message}];
   try {
+    console.log(rows);
     await bigquery.dataset(datasetId).table(tableId).insert(rows);
-    //console.log(Inserted ${rows.length} rows);
+    console.log("test3");
+    console.log(`Inserted ${rows.length} rows`);
   } catch (error) {
     console.error('ERROR:', error);
   }
@@ -90,13 +108,12 @@ async function insertChatHistory(userId, message) {
 
 // Endpoint to store chat history
 app.post('/saveChatHistory', async (req, res) => {
-  const { userId, message } = req.body;
-
-  await insertChatHistory(userId, message);
-  res.sendStatus(200);
+  const { userId, message } = req.body;  
+  const armessage= JSON.stringify(message);
+  await insertChatHistory(userId, armessage);
+  console.log("test1");
+ res.sendStatus(200);
 });
-
-
 
 // Endpoint to get chat history
 app.get('/getChatHistory/:userId', async (req, res) => {
@@ -105,28 +122,21 @@ app.get('/getChatHistory/:userId', async (req, res) => {
   const history = await getChatHistory(userId);
   res.json(history);
 });
-// async function insertChatHistory(sessionId, userId, message) {  
-
-//     const rows = [
-//         { session_id: sessionId, user_id: userId, message: message, timestamp: new Date().toISOString() }
-//     ];
-
-//     await bigquery.dataset(datasetId).table(tableId).insert(rows);
-//     console.log(`Inserted chat history for session: ${sessionId}`);
-// }
 
 // async function getChatHistory(sessionId) {
-//   const query = SELECT * FROM \`project_id.dataset_id.chat_history\ WHERE session_id = @sessionId ORDER BY timestamp ASC`;
+//     const query = SELECT * FROM \`project_id.datasetId.tableId\ WHERE session_id = @sessionId ORDER BY timestamp ASC`;
+    
+//     const options = {
+//         query: query,
+//         params: { sessionId: sessionId },
+//     };
   
-//   const options = {
-//       query: query,
-//       params: { sessionId: sessionId },
-//   };
+//     const [rows] = await bigquery.query(options);
+//     return rows;
+//   }
 
-//   const [rows] = await bigquery.query(options);
-//   return rows;
-// }
-
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+// Start the server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
 });
