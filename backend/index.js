@@ -3,7 +3,6 @@ const express = require('express');
 const multer = require('multer');
 const { Storage } = require('@google-cloud/storage');
 const path = require('path');
-const port = 3000;
 const { BigQuery } = require('@google-cloud/bigquery');
 
 // Initialize Express
@@ -27,6 +26,11 @@ const bigquery = new BigQuery({ credentials });
 const datasetId = 'chat_history_dataset';
 const tableId = 'chat_history_demo';
 const project_id = process.env.project_id;
+// const bigqueryt = new BigQuery({
+//   projectId: process.env.project_id,
+//   location: 'US'  // Add this line to set a default location for your queries
+// });
+
 // POST: Upload multiple files to Google Cloud Storage
 app.post('/', upload.array('files'), async (req, res) => {
   try {
@@ -94,12 +98,9 @@ app.get('/', async (req, res) => {
 
 // Insert chat history into BigQuery
 async function insertChatHistory(user_id, message) {  
-  console.log(project_id);
-  const rows = [{ user_id, message}];
+  const rows = [{ user_id, message,timestamp: new Date().toISOString()}];
   try {
-    console.log(rows);
     await bigquery.dataset(datasetId).table(tableId).insert(rows);
-    console.log("test3");
     console.log(`Inserted ${rows.length} rows`);
   } catch (error) {
     console.error('ERROR:', error);
@@ -111,29 +112,27 @@ app.post('/saveChatHistory', async (req, res) => {
   const { userId, message } = req.body;  
   const armessage= JSON.stringify(message);
   await insertChatHistory(userId, armessage);
-  console.log("test1");
+
  res.sendStatus(200);
 });
 
 // Endpoint to get chat history
 app.get('/getChatHistory/:userId', async (req, res) => {
-  const userId = req.params.userId;
-
-  const history = await getChatHistory(userId);
-  res.json(history);
+  const user_id = req.params.userId;
+  //await getChatHistory(userId);
+   const history = await getChatHistory(user_id);
+   res.json(history);
 });
 
-// async function getChatHistory(sessionId) {
-//     const query = SELECT * FROM \`project_id.datasetId.tableId\ WHERE session_id = @sessionId ORDER BY timestamp ASC`;
-    
-//     const options = {
-//         query: query,
-//         params: { sessionId: sessionId },
-//     };
-  
-//     const [rows] = await bigquery.query(options);
-//     return rows;
-//   }
+async function getChatHistory(user_id) {
+    const query = `SELECT * FROM  chat_history_dataset.chat_history_demo WHERE user_id = @user_id ORDER BY timestamp ASC` ;
+    const options = {
+        query: query,
+        params: { user_id: user_id }
+    };
+    const [rows] = await bigquery.query(options);
+    return rows;
+  }
 
 // Start the server
 const PORT = process.env.PORT || 3000;

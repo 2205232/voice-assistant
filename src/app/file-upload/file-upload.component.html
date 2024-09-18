@@ -1,136 +1,70 @@
-<!-- <div class="container">
-  <div>
-      @if (progress) {
-      <mat-toolbar class="progress-bar">
-        <mat-progress-bar color="accent" [value]="progress"></mat-progress-bar>
-        <span class="progress">{{ progress }}%</span>
-      </mat-toolbar>
-      }
-    
-      <mat-form-field>
-        <div>
-          <mat-toolbar>
-            <input matInput [value]="fileName" />            
-            <button
-              mat-flat-button
-              (click)="upload()"
-            >Upload
-            </button>
-            </mat-toolbar>
-         
-          <input type="file"
-          id="upload-files-id"
-          name="formFile" multiple 
-          (change)="fileSelectionChanged($event)"    >  
-      
-          
-        </div>
-      </mat-form-field>
-    </div>
-    
-    @if (message) {
-    <div class="message">
-      {{ message }}
-    </div>
-    }
-    
-    <mat-card class="example-card">
-      <mat-card-header>
-        <mat-card-title>List of Files</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <mat-list role="list">
-          @for (file of fileInfos | async; track file.name) {
-          <mat-list-item role="listitem">
-            <a href="{{ file.url }}">{{ file.name }}</a>
-          </mat-list-item>
-          }
-        </mat-list>
-        <table>
-          <thead>
-            <tr>
-              <th>File Name</th>
-              <th>URL</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let file of uploadedFiles">
-              <td>{{ file.name }}</td>
-              <td><a [href]="file.url" target="_blank">{{ file.url }}</a></td>
-            </tr>
-          </tbody>
-        </table>
-        <a href="#">Home</a>
-      </mat-card-content>
-    </mat-card>
-  </div> -->
-  <div style =" height: 60px;">
-    <!-- <input type="file" (change)="fileSelectionChanged($event)" multiple>
-    <button (click)="upload()">Upload</button> -->
+<div style =" height: 60px;">
+  <!-- <input type="file" (change)="fileSelectionChanged($event)" multiple>
+  <button (click)="upload()">Upload</button> -->
 
-    <mat-form-field>
-        <mat-toolbar>
-          <input matInput [value]="fileName" />            
-          <button  mat-flat-button (click)="upload()"  >Upload  </button>
-          </mat-toolbar>       
-          <input type="file" (change)="fileSelectionChanged($event)" multiple>
-          <div *ngIf="filesToUpload.length > 0">
-           <span *ngFor="let file of filesToUpload; let i = index">
+  <mat-form-field>
+      <mat-toolbar>
+        <input matInput [value]="fileName" />            
+        <button  mat-flat-button (click)="upload()"  >Upload  </button>
+        </mat-toolbar>       
+        <input type="file" (change)="fileSelectionChanged($event)" multiple>
+        <div *ngIf="filesToUpload.length > 0">
+         <span *ngFor="let file of filesToUpload; let i = index">
+            {{ file.name }}
+            <mat-icon (click)="removeFile(i)">close</mat-icon>
+          </span>
+          <!-- <ul>
+            <li *ngFor="let file of filesToUpload; let i = index">
               {{ file.name }}
               <button (click)="removeFile(i)">Delete</button>
-            </span>
-            <!-- <ul>
-              <li *ngFor="let file of filesToUpload; let i = index">
-                {{ file.name }}
-                <button (click)="removeFile(i)">Delete</button>
-              </li>
-            </ul> -->
-          </div>
-    </mat-form-field>
-    
-  </div>
-  <div style="padding-top: 20px;">
-  <table mat-table [dataSource]="uploadedFiles" class="mat-elevation-z8">
-    
-    <ng-container matColumnDef="name">
-      <th mat-header-cell *matHeaderCellDef> File Name </th>
-      <td mat-cell *matCellDef="let file"> {{file.name}} </td>
-    </ng-container>
+            </li>
+          </ul> -->
+        </div>
+  </mat-form-field>
   
-    <ng-container matColumnDef="url">
-      <th mat-header-cell *matHeaderCellDef> File URL </th>
-      <td mat-cell *matCellDef="let file">
-        <a [href]="file.url" target="_blank">{{file.url}}</a>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="Size">
-      <th mat-header-cell *matHeaderCellDef> Size</th>
-      <td mat-cell *matCellDef="let file">
-        <a  target="_blank">{{file.size}}</a>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="Type">
-      <th mat-header-cell *matHeaderCellDef> Type</th>
-      <td mat-cell *matCellDef="let file">
-        <a target="_blank">{{file.type}}</a>
-      </td>
-    </ng-container>
-    <ng-container matColumnDef="Action">
-      <th mat-header-cell *matHeaderCellDef> Action</th>
-      <td mat-cell *matCellDef="let file">
-        <a target="_blank">
-          <mat-icon>cloud_download</mat-icon>
-          <mat-icon>delete_forever</mat-icon>
-        </a>
-      </td>
-    </ng-container>
+</div>
+<div style="padding-top: 20px;">
+<table mat-table [dataSource]="uploadedFiles" class="mat-elevation-z8">
   
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
-    <mat-paginator  #paginator
-    (page)="pageChangeEvent($event)"[length]="totalRecords " [pageSize]="pageSize"
-    [pageIndex]="pageIndex"
-    aria-label="Select page of GitHub search results">
-    </mat-paginator>
+  <ng-container matColumnDef="name">
+    <th mat-header-cell *matHeaderCellDef> File Name </th>
+    <td mat-cell *matCellDef="let file"> {{file.name}} </td>
+  </ng-container>
+
+  <ng-container matColumnDef="url">
+    <th mat-header-cell *matHeaderCellDef> File URL </th>
+    <td mat-cell *matCellDef="let file">
+      <a [href]="file.url" target="_blank">{{file.url}}</a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Size">
+    <th mat-header-cell *matHeaderCellDef> Size</th>
+    <td mat-cell *matCellDef="let file">
+      <a  target="_blank">{{file.size}}</a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Type">
+    <th mat-header-cell *matHeaderCellDef> Type</th>
+    <td mat-cell *matCellDef="let file">
+      <a target="_blank">{{file.type}}</a>
+    </td>
+  </ng-container>
+  <ng-container matColumnDef="Action">
+    <th mat-header-cell *matHeaderCellDef> Action</th>
+    <td mat-cell *matCellDef="let file">
+      <a target="_blank">
+        <mat-icon>cloud_download</mat-icon>
+        <mat-icon>delete_forever</mat-icon>
+      </a>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+  <mat-paginator  #paginator
+  (page)="pageChangeEvent($event)"[length]="totalRecords " [pageSize]="pageSize"
+  [pageIndex]="pageIndex"
+  aria-label="Select page of GitHub search results">
+  </mat-paginator>
 </div>

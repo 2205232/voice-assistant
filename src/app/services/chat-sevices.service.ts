@@ -19,6 +19,7 @@ export class ChatSevicesService {
   
   private uploadUrl = 'http://localhost:3000/';
   private fetchFilesUrl = 'http://localhost:3000/saveChatHistory';
+  private ChatHistoryUrl = 'http://localhost:3000/getChatHistory/';
 
   constructor(private http: HttpClient) { 
     //this.generrativeAI =new GoogleGenerativeAI(environment.API_KEY);
@@ -57,7 +58,6 @@ export class ChatSevicesService {
       return;
     }
     this.chatsBackupHistory.push({chatId: this.chatCounter,chat});
-    console.log(this.chatsBackupHistory);
     this.chatsBackup=this.chatsBackupHistory;
 
   }
@@ -76,14 +76,15 @@ export class ChatSevicesService {
 
     // Save chat history to backend
     saveChatHistory(userId: string, message: any): Observable<any> {
-      const payload = { userId, message };
-      console.log(payload);
+      var messageJson = JSON.stringify(message);
+      const payload = { userId, messageJson };
       return this.http.post(this.fetchFilesUrl, payload);
     }
   
     // // Fetch chat history from backend
-    // getChatHistory(userId: string): Observable<any> {
-    //   return this.http.get(${this.apiUrl}/getChatHistory/${userId});
-    // }
+    getChatHistory(userId: string): Observable<any> {
+      const getdataURl=this.ChatHistoryUrl+userId;
+      return this.http.get(getdataURl);
+    }
   
 }

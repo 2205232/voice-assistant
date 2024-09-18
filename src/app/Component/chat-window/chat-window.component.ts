@@ -45,7 +45,7 @@ export class ChatWindowComponent implements OnInit {
   activeChatId: number | null = null;  
   chatCounter: number = 0;
   Chathistory:any[]=[];
-
+  chatname :string=''
   userId: string = 'user123'; // In a real app, you should dynamically set this
   message: string = '';
   chatHistory: { message: string, timestamp: Date }[] = [];
@@ -55,7 +55,10 @@ export class ChatWindowComponent implements OnInit {
 
   ngOnInit() {
     this.newchaticon=true;
-    this.isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
+    if (localStorage.getItem('isAuthenticated') === 'true'){
+      this.isLoggedIn=true;
+    }
+   // this.isLoggedIn = localStorage.getItem('isAuthenticated') === 'true';
   }
 
   userlogin() {  
@@ -73,14 +76,16 @@ export class ChatWindowComponent implements OnInit {
     this.chatService.addChat(this.messages);  
     this.messages = [];
     this.chatsBackup = this.chatService.getChatsBackup();
+    this.chatname=this.chatsBackup[0].chat[0].text;
+   
 
   }
-  backupChat() {
-    this.chatService.addChat(this.messages);  
-    this.messages = [];
-    this.chatsBackup = this.chatService.getChatsBackup();
+  // backupChat() {
+  //   this.chatService.addChat(this.messages);  
+  //   this.messages = [];
+  //   this.chatsBackup = this.chatService.getChatsBackup();
 
-  }
+  // }
 
   setActiveChat(chatId: number) {    
 
@@ -170,8 +175,8 @@ export class ChatWindowComponent implements OnInit {
 
       this.http.post<any>(URL, payload).pipe(
         catchError(error => {
-         console.error('Error caught in catchError:', error);
-          this.messages.push({ text: 'Error in API call: ' + error.message, sender: 'bot' });
+         //console.error('Error caught in catchError:', error);
+        //  this.messages.push({ text: 'Error in API call: ' + error.message, sender: 'bot' });
           return of(null);  // return a fallback observable if needed
         })
       ).subscribe(
@@ -189,14 +194,8 @@ export class ChatWindowComponent implements OnInit {
         }
       );
       this.Chathistory=this.messages;
-      console.log(this.userId);
       if(this.Chathistory.length > 0){
-        this.chatService.saveChatHistory(this.userId, this.Chathistory).subscribe(
-          (response) => {
-            console.log('Message saved:', response);
-           // this.chatHistory.push({ message: this.message, timestamp: new Date() });
-            //this.message = ''; // Clear the input after sending
-          });
+        this.sendhistoryMessage();
       }
       // Clear the search box
       this.searchText = '';
@@ -204,21 +203,13 @@ export class ChatWindowComponent implements OnInit {
 
   }
 
-   // Function to send chat message and save it
-  //  sendhistoryMessage() {
-  //   if (this.message.trim()) {
-  //     // Save message to chat history
-  //     this.chatService.saveChatHistory(this.userId, this.message).subscribe(
-  //       (response) => {
-  //         console.log('Message saved:', response);
-  //         this.chatHistory.push({ message: this.message, timestamp: new Date() });
-  //         this.message = ''; // Clear the input after sending
-  //       },
-  //       (error) => {
-  //         console.error('Error saving message:', error);
-  //       }
-  //     );
-  //   }
-  // }
+  sendhistoryMessage(){
+    this.chatService.saveChatHistory(this.userId, this.Chathistory).subscribe(
+      (response) => {
+        console.log('Message saved:', response);
+       // this.chatHistory.push({ message: this.message, timestamp: new Date() });
+        //this.message = ''; // Clear the input after sending
+      });
+  }  
 
 }

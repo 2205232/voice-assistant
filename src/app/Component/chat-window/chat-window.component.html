@@ -23,7 +23,7 @@
         <div *ngFor="let chat of chatsBackup" class="chat-tab">
           <div style="cursor: pointer;" (click)="setActiveChat(chat.chatId)">
             <mat-icon style="margin-top: 12px;font-size: 25px;"> insert_drive_file</mat-icon> 
-            Chat Window - {{ chat.chatId }}
+            {{ chatname}} - {{ chat.chatId }}
           </div>
         </div>
         <!-- <div *ngFor="let chat of chatsBackup">

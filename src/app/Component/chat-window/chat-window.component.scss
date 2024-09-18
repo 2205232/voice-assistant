@@ -92,12 +92,17 @@
   display: flex;
   align-items: center;
   width: 100%;
-  max-width: 700px;
-  //background-color: #b9b3b3;
-  padding: 10px;
-  border-radius: 25px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  border: 1px solid black;
+  max-width: 800px;
+  padding: 15px;
+  border-radius: 30px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+  background-color: #ffffff;
+  transition: box-shadow 0.3s ease;
+
+  &:focus-within {
+    box-shadow: 0 6px 12px rgba(60, 120, 216, 0.2);
+  }
 }
 
 .search-bar input {
