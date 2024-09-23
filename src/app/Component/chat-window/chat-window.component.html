@@ -15,17 +15,18 @@
           <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
           vertical-align: super;
           font-size: 18px ;
-          color: #5f6368;">Bishwakosh</span>
+          color: #5f6368;"></span>
       </div>
       <button mat-flat-button  [disabled]="newchaticon" (click)="createNewChat()">+ New Chat</button>
 
-      
-        <div *ngFor="let chat of chatsBackup" class="chat-tab">
+      <div>
+        <div *ngFor="let chat of chatsBackup;let i=index" class="chat-tab">
           <div style="cursor: pointer;" (click)="setActiveChat(chat.chatId)">
             <mat-icon style="margin-top: 12px;font-size: 25px;"> insert_drive_file</mat-icon> 
-            {{ chatname}} - {{ chat.chatId }}
+           window-{{title}} -{{ chat.chatId }}
           </div>
         </div>
+      </div>
         <!-- <div *ngFor="let chat of chatsBackup">
           <mat-icon > chat</mat-icon>
           <span class="label-space"> Chat Window </span>
@@ -38,7 +39,8 @@
         color: #5f6368;">
           Meet          
         </div> -->
-        <div *ngIf="isLoggedIn" (click)="manageDoc()">
+        
+        <!-- <div *ngIf="isLoggedIn" (click)="manageDoc()">
           <mat-icon class="adjust-icon"  >cloud_upload</mat-icon>
           <span class="label-space">Upload Document</span><br>
         </div>
@@ -48,23 +50,17 @@
             <mat-icon class="adjust-icon">exit_to_app</mat-icon> Login</button>
           <button mat-stroked-button color="accent"  *ngIf="isLoggedIn" (click)="userlogout()">
               <mat-icon>exit_to_app</mat-icon> Log Out
-          </button>
+          </button> -->
         </ul>
     </aside>
 
     <section class="assistant-section ">
-      <h1  *ngIf="showgoogle">  <img src="/assets/Biswakosh.png"  style="width: 230px;">
-        <!-- <span style="position: relative;font-family: Product Sans, Arial, sans-serif;top: -1.5px;
-          vertical-align: super;font-weight: bold;
-          font-size: 30px ;
-          color: #5f6368;">Vishwakosh</span> -->
-      </h1>
-      <!-- <div class="messages-container" *ngIf="activeChatId" [ngClass]="{'res-msg':!showgoogle}">
-        <div *ngFor="let chat of chatsBackup[chat]" class="message" [ngClass]="{'from-user':chat.sender === 'user'}">
-          <mat-icon *ngIf="headicon" >account_circle</mat-icon>
-          {{chat.text}}
+      <!-- <h1  >  <img src="/assets/Biswakosh.png"  style="width: 230px;"> -->
+        <div class='box' *ngIf="showgoogle">
+          <h3>Virtual Assistant</h3>
         </div>
-      </div> -->
+      <!-- </h1> -->
+    
         <div class="messages-container"  [ngClass]="{'res-msg':!showgoogle}">
           <div *ngFor="let message of messages" class="message" [ngClass]="{'from-user':message.sender === 'user'}">
             <mat-icon *ngIf="headicon" >account_circle</mat-icon>

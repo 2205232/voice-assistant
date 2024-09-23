@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {HttpClient,HttpEvent,HttpParams,HttpResponse,HttpHeaders, HttpRequest} from '@angular/common/http';
-import { Observable ,BehaviorSubject} from 'rxjs';
+import { Observable ,BehaviorSubject, of} from 'rxjs';
 import {GoogleGenerativeAI} from '@google/generative-ai';
 import { response } from 'express';
-import { map } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 
 
@@ -14,9 +14,8 @@ export class ChatSevicesService {
   private generrativeAI:GoogleGenerativeAI;
   private chatsBackup: any[] = [];
   chatsBackupHistory: any[] = [];
-  chatCounter: number = 0;
 
-  
+  private readonly URL = 'https://apps.gcpwkshpdev.com/chat/v2';
   private uploadUrl = 'http://localhost:3000/';
   private fetchFilesUrl = 'http://localhost:3000/saveChatHistory';
   private ChatHistoryUrl = 'http://localhost:3000/getChatHistory/';
@@ -35,31 +34,32 @@ export class ChatSevicesService {
 
 //  }
 
- getgenerateTest(payload:any){
-  let headers = new HttpHeaders({
-    'Content-Type': 'application/json',
-  });
-  let headeroptions = { headers: headers };
-  let URL ='https://apps.gcpwkshpdev.com/chat/v2';
-  //let url='https://catfact.ninja/fact';
-  return this.http.post<any>(URL,payload,headeroptions).pipe(map(response=>response))
-  //return this.http.get<any>(url,payload).pipe(map(response=>response))
-
- }
+sendChatRequest(payload: any): Observable<any> {
+  return this.http.post<any>(this.URL, payload).pipe(
+    catchError(error => {
+      console.error('Error caught in ChatService:', error);
+      return of({ error: 'Error in API call: ' + error.message });
+       // Return fallback observable with error
+    })
+  );
+}
 
   getChatsBackup() {
     return this.chatsBackup;
   }
 
   addChat(chat: any) {
-    this.chatCounter++;   
-    if (this.chatsBackup.length >= 5 || this.chatCounter>=6) {
-      //this.chatsBackup.shift(); // Remove the oldest chat backup if limit is reached
-      return;
-    }
-    this.chatsBackupHistory.push({chatId: this.chatCounter,chat});
+    this.chatsBackupHistory.push({chat});
     this.chatsBackup=this.chatsBackupHistory;
-
+    
+  //  if(chatId=0){
+  //   this.chatsBackupHistory.push({chatId: this.chatCounter,chat});
+  //   this.chatsBackup=this.chatsBackupHistory;
+  //  }else{
+  //   console.log("test");
+  //   //this.chatsBackup=this.chatsBackupHistory;
+  //  }
+   
   }
 
   uploadFiles(files: File[]): Observable<any>{
